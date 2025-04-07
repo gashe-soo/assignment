@@ -1,0 +1,44 @@
+# VS Code 관련 파일 무시
+.vscode/
+*.code-workspace
+
+# Python 가상환경
+venv/
+.env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 패키지 설치 파일
+Pipfile
+Pipfile.lock
+poetry.lock
+
+# 로그 & 임시 파일
+logs/
+*.log
+.DS_Store
+Thumbs.db
+
+# 환경 변수 파일
+.env
+.env.local
+.env.development
+.env.production
+
+# Jupyter Notebook 체크포인트
+.ipynb_checkpoints/
+
+# 컴파일된 바이너리
+*.so
+*.o
+*.a
+*.out
+
+# Test coverage
+.coverage
+htmlcov/
+nosetests.xml
+coverage.xml
+pytest_cache/
