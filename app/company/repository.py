@@ -43,8 +43,16 @@ class CompanyRepository:
     async def search_companies_with_partial_name(
         self, partial: str
     ) -> list[CompanyWithLocale]:
-        # TODO: Implement this method
-        raise NotImplementedError
+        stmt = select(
+            CompanyTranslation.locale, CompanyTranslation.name
+        ).where(CompanyTranslation.name.ilike(f"%{partial}%"))
+
+        result = (await self.session.execute(stmt)).all()
+        print(result)
+        return [
+            CompanyWithLocale(locale=locale, name=name)
+            for locale, name in result
+        ]
 
     async def get_companies_by_tag_id(self, tag_id: int) -> list[Company]:
         # TODO: Implement this method
