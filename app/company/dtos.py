@@ -11,6 +11,15 @@ class CreateCompanyDto(BaseModel):
     tag_ids: list[int] = []
 
 
+class TagNameWithLocales(BaseModel):
+    names: list[NameWithLocale] = []
+
+
+class CreateCompanyWithTagDto(BaseModel):
+    names: list[NameWithLocale] = []
+    tags: list[TagNameWithLocales] = []
+
+
 class CompanyWithLocale(BaseModel):
     locale: str
     name: str

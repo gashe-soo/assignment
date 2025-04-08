@@ -34,8 +34,7 @@ cryptography = "^44.0.2"
 
 [tool.mypy]
 python_version = "3.13"
-mypy_path = ["./"]
-exclude = ["^tests/"]
+exclude = ['^tests/']
 strict = true
 ignore_missing_imports = true
 disable_error_code = ["misc"]
