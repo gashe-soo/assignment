@@ -67,8 +67,28 @@ class CompanyRepository:
         return list(result.scalars().all())
 
     async def add_tag_on_company(self, name: str, tag_ids: list[int]) -> None:
-        # TODO: Implement this method
-        raise NotImplementedError
+        stmt = (
+            select(Company)
+            .join(CompanyTranslation)
+            .where(CompanyTranslation.name == name)
+            .limit(1)
+        )
+        result = await self.session.execute(stmt)
+        company = result.scalar_one_or_none()
+
+        if not company:
+            return
+
+        existing_tag_ids = {ct.tag_id for ct in company.tags}
+
+        new_tags = [
+            CompanyTag(company_id=company.id, tag_id=tag_id)
+            for tag_id in tag_ids
+            if tag_id not in existing_tag_ids
+        ]
+
+        self.session.add_all(new_tags)
+        await self.session.flush()
 
     async def delete_tag_of_company(self, name: str, tag_id: int) -> None:
         # TODO: Implement this method
