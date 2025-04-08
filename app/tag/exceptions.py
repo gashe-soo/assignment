@@ -1,4 +1,4 @@
-from app.core.exception import CustomException
+from app.core.exceptions import CustomException
 
 
 class NotFoundTagException(CustomException):

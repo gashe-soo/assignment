@@ -1,5 +1,5 @@
 from app.tag.dtos import CreateTagDto
-from app.tag.exception import NotFoundTagException
+from app.tag.exceptions import NotFoundTagException
 from app.tag.models import Tag
 from app.tag.repository import TagRepository
 

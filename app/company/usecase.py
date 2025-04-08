@@ -3,6 +3,7 @@ from app.company.dtos import (
     CreateCompanyWithTagDto,
     NameWithLocale,
 )
+from app.company.exceptions import NotFoundCompanyException
 from app.company.models import Company
 from app.company.repository import CompanyRepository
 from app.tag.dtos import CreateTagDto, TagNameWithLocale
@@ -17,7 +18,7 @@ class CompanyUsecase:
         self.tag_usecase = tag_usecase
 
     async def create_company(
-        self, company_data: CreateCompanyWithTagDto, locale: str
+        self, company_data: CreateCompanyWithTagDto
     ) -> Company:
         tag_dtos = [
             CreateTagDto(
@@ -38,9 +39,13 @@ class CompanyUsecase:
         company = await self.repository.create_company(company_dto)
         return company
 
-    async def get_company_by_name(self, name: str, locale: str) -> Company:
-        # TODO: Implement this method
-        raise NotImplementedError
+    async def get_company_by_name(self, name: str) -> Company:
+        company = await self.repository.get_company_by_name(name)
+        if not company:
+            raise NotFoundCompanyException(
+                f"Company with name {name} not found."
+            )
+        return company
 
     async def get_company_names_by_partial_name(
         self, name: str, locale: str
@@ -54,8 +59,6 @@ class CompanyUsecase:
         # TODO: Implement this method
         raise NotImplementedError
 
-    async def delete_tag_of_company(
-        self, name: str, tag_name: str, locale: str
-    ) -> None:
+    async def delete_tag_of_company(self, name: str, tag_name: str) -> None:
         # TODO: Implement this method
         raise NotImplementedError

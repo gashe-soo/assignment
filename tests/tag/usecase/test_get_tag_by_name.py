@@ -3,7 +3,7 @@ from unittest.mock import AsyncMock
 import pytest
 
 from app.core.enums import Locale
-from app.tag.exception import NotFoundTagException
+from app.tag.exceptions import NotFoundTagException
 from app.tag.models import Tag, TagTranslation
 from app.tag.usecase import TagUsecase
 
