@@ -40,4 +40,8 @@ async def setup_database() -> AsyncGenerator[None, None]:
 @pytest.fixture()
 async def session() -> AsyncGenerator[AsyncSession, None]:
     async with TestSessionLocal() as session:
-        yield session
+        try:
+            yield session
+        finally:
+            await session.rollback()
+            await session.close()

@@ -1,4 +1,6 @@
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from app.company.dtos import CompanyWithLocale, CreateCompanyDto
 from app.company.models import Company, CompanyTag, CompanyTranslation
@@ -25,8 +27,18 @@ class CompanyRepository:
         return company
 
     async def get_company_by_name(self, name: str) -> Company | None:
-        # TODO: Implement this method
-        raise NotImplementedError
+        stmt = (
+            select(Company)
+            .join(CompanyTranslation)
+            .options(
+                joinedload(Company.translations), joinedload(Company.tags)
+            )
+            .where(CompanyTranslation.name == name)
+            .limit(1)
+        )
+
+        result = (await self.session.execute(stmt)).unique().scalars().first()
+        return result if result else None
 
     async def search_companies_with_partial_name(
         self, partial: str
