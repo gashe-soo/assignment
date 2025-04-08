@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload, selectinload
 
@@ -48,7 +48,6 @@ class CompanyRepository:
         ).where(CompanyTranslation.name.ilike(f"%{partial}%"))
 
         result = (await self.session.execute(stmt)).all()
-        print(result)
         return [
             CompanyWithLocale(locale=locale, name=name)
             for locale, name in result
@@ -88,8 +87,21 @@ class CompanyRepository:
         ]
 
         self.session.add_all(new_tags)
-        await self.session.flush()
 
     async def delete_tag_of_company(self, name: str, tag_id: int) -> None:
-        # TODO: Implement this method
-        raise NotImplementedError
+        stmt = (
+            select(Company)
+            .join(CompanyTranslation)
+            .where(CompanyTranslation.name == name)
+            .limit(1)
+        )
+        result = await self.session.execute(stmt)
+        company = result.scalar_one_or_none()
+
+        if not company:
+            return
+
+        delete_stmt = delete(CompanyTag).where(
+            CompanyTag.company_id == company.id, CompanyTag.tag_id == tag_id
+        )
+        await self.session.execute(delete_stmt)
