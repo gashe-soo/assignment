@@ -27,11 +27,15 @@ isort = "^6.0.1"
 flake8 = "^7.2.0"
 mypy = "^1.15.0"
 pre-commit = "^4.2.0"
+pytest-asyncio = "^0.26.0"
+greenlet = "^3.1.1"
+cryptography = "^44.0.2"
 
 
 [tool.mypy]
 python_version = "3.13"
 mypy_path = ["./"]
+exclude = ["^tests/"]
 strict = true
 ignore_missing_imports = true
 disable_error_code = ["misc"]
@@ -43,3 +47,11 @@ multi_line_output = 3
 include_trailing_comma = true
 force_grid_wrap = 0
 combine_as_imports = true
+
+
+[tool.pytest.ini_options]
+addopts = "-ra -q"
+asyncio_mode = "auto"
+testpaths = [
+    "test",
+]

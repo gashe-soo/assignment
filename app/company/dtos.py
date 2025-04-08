@@ -1,7 +1,5 @@
 from pydantic import BaseModel
 
-from app.tag.models import Tag
-
 
 class NameWithLocale(BaseModel):
     name: str
@@ -10,7 +8,7 @@ class NameWithLocale(BaseModel):
 
 class CreateCompanyDto(BaseModel):
     names: list[NameWithLocale] = []
-    tags: list[Tag] = []
+    tag_ids: list[int] = []
 
 
 class CompanyWithLocale(BaseModel):

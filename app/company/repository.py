@@ -1,11 +1,28 @@
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.company.dtos import CompanyWithLocale, CreateCompanyDto
-from app.company.models import Company
+from app.company.models import Company, CompanyTag, CompanyTranslation
 
 
 class CompanyRepository:
+    def __init__(self, session: AsyncSession):
+        self.session = session
+
     async def create_company(self, company_data: CreateCompanyDto) -> Company:
-        # TODO: Implement this method
-        raise NotImplementedError
+        company = Company()
+        company.translations = [
+            CompanyTranslation(
+                name=name_with_locale.name, locale=name_with_locale.locale
+            )
+            for name_with_locale in company_data.names
+        ]
+        company.tags = [
+            CompanyTag(tag_id=tag_id) for tag_id in company_data.tag_ids
+        ]
+
+        self.session.add(company)
+        await self.session.flush()
+        return company
 
     async def get_company_by_name(self, name: str) -> Company | None:
         # TODO: Implement this method

@@ -4,7 +4,6 @@ from sqlalchemy import ForeignKey, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
-from app.core.enums import Locale
 from app.tag.models import Tag
 
 
@@ -12,9 +11,6 @@ class Company(Base):
     __tablename__ = "company"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    default_locale: Mapped[str] = mapped_column(
-        String(10), nullable=False, default=Locale.KO
-    )
     created_at: Mapped[datetime] = mapped_column(
         default=lambda: datetime.now(timezone.utc)
     )
@@ -40,7 +36,7 @@ class CompanyTranslation(Base):
         ForeignKey("company.id", ondelete="CASCADE"), nullable=False
     )
     locale: Mapped[str] = mapped_column(String(10), nullable=False, index=True)
-    name: Mapped[str] = mapped_column(nullable=False, index=True)
+    name: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
 
     company: Mapped["Company"] = relationship(back_populates="translations")
 
