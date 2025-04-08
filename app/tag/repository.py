@@ -48,5 +48,12 @@ class TagRepository:
         return created_tags
 
     async def get_tag_by_name(self, name: str) -> Tag | None:
-        # TODO: Implement this method
-        raise NotImplementedError
+        stmt = (
+            select(Tag)
+            .join(TagTranslation)
+            .where(TagTranslation.name == name)
+            .limit(1)
+        )
+
+        result = (await self.session.execute(stmt)).scalar_one_or_none()
+        return result if result else None
