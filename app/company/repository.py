@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, selectinload
 
 from app.company.dtos import CompanyWithLocale, CreateCompanyDto
 from app.company.models import Company, CompanyTag, CompanyTranslation
@@ -55,8 +55,16 @@ class CompanyRepository:
         ]
 
     async def get_companies_by_tag_id(self, tag_id: int) -> list[Company]:
-        # TODO: Implement this method
-        raise NotImplementedError
+        stmt = (
+            select(Company)
+            .join(CompanyTag)
+            .where(CompanyTag.tag_id == tag_id)
+            .options(
+                selectinload(Company.translations), selectinload(Company.tags)
+            )
+        )
+        result = await self.session.execute(stmt)
+        return list(result.scalars().all())
 
     async def add_tag_on_company(self, name: str, tag_ids: list[int]) -> None:
         # TODO: Implement this method
