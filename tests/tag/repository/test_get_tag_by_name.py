@@ -12,15 +12,15 @@ async def test_it_should_return_existing_tag(
     # Given
     tag = Tag(
         translations=[
-            TagTranslation(name="디자인", locale="ko"),
-            TagTranslation(name="Design", locale="en"),
+            TagTranslation(name="신규태그", locale="ko"),
+            TagTranslation(name="New_tag", locale="en"),
         ]
     )
     session.add(tag)
     await session.flush()
 
     # When
-    result = await repository.get_tag_by_name("디자인")
+    result = await repository.get_tag_by_name("신규태그")
 
     # Then
     assert result is not None

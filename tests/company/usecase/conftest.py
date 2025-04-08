@@ -8,7 +8,7 @@ from app.tag.usecase import TagUsecase
 
 
 @pytest.fixture
-async def usecase() -> CompanyUsecase:
+async def usecase(session) -> CompanyUsecase:
     return CompanyUsecase(
         repository=AsyncMock(spec=CompanyRepository),
         tag_usecase=AsyncMock(spec=TagUsecase),

@@ -6,6 +6,7 @@ from app.company.dtos import (
 from app.company.exceptions import NotFoundCompanyException
 from app.company.models import Company
 from app.company.repository import CompanyRepository
+from app.core.database import transactional
 from app.tag.dtos import CreateTagDto, TagNameWithLocale
 from app.tag.usecase import TagUsecase
 
@@ -17,6 +18,7 @@ class CompanyUsecase:
         self.repository = repository
         self.tag_usecase = tag_usecase
 
+    @transactional
     async def create_company(
         self, company_data: CreateCompanyWithTagDto
     ) -> Company:
@@ -43,7 +45,7 @@ class CompanyUsecase:
         company = await self.repository.get_company_by_name(name)
         if not company:
             raise NotFoundCompanyException(
-                f"Company with name {name} not found."
+                message=f"Company with name {name} not found."
             )
         return company
 
@@ -61,6 +63,7 @@ class CompanyUsecase:
             if company_with_local.locale == locale
         ]
 
+    @transactional
     async def add_tag_on_company(
         self, name: str, tags: list[TagNameWithLocales]
     ) -> None:
@@ -79,6 +82,7 @@ class CompanyUsecase:
         tag_ids = [tag.id for tag in created_tags]
         await self.repository.add_tag_on_company(name=name, tag_ids=tag_ids)
 
+    @transactional
     async def delete_tag_of_company(self, name: str, tag_name: str) -> None:
         tag = await self.tag_usecase.get_tag_by_name(name=tag_name)
         await self.repository.delete_tag_of_company(name=name, tag_id=tag.id)

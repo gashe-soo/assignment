@@ -14,5 +14,7 @@ class TagUsecase:
     async def get_tag_by_name(self, name: str) -> Tag:
         tag = await self.repository.get_tag_by_name(name)
         if not tag:
-            raise NotFoundTagException(f"Tag with name {name} not found.")
+            raise NotFoundTagException(
+                message=f"Tag with name {name} not found."
+            )
         return tag

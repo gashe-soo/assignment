@@ -48,6 +48,7 @@ class CompanyRepository:
         ).where(CompanyTranslation.name.ilike(f"%{partial}%"))
 
         result = (await self.session.execute(stmt)).all()
+
         return [
             CompanyWithLocale(locale=locale, name=name)
             for locale, name in result
@@ -69,6 +70,10 @@ class CompanyRepository:
         stmt = (
             select(Company)
             .join(CompanyTranslation)
+            .options(
+                selectinload(Company.translations),
+                selectinload(Company.tags).selectinload(CompanyTag.tag),
+            )
             .where(CompanyTranslation.name == name)
             .limit(1)
         )

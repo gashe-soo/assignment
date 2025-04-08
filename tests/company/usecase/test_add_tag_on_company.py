@@ -26,7 +26,7 @@ async def test_add_tag_on_company_should_create_multilingual_tags_and_add(
         ),
     ]
 
-    created_tags = [Tag(id=1), Tag(id=2)]
+    created_tags = [Tag(), Tag()]
     usecase.tag_usecase.create_tags.return_value = created_tags
 
     # When
@@ -49,5 +49,5 @@ async def test_add_tag_on_company_should_create_multilingual_tags_and_add(
     ]
     usecase.tag_usecase.create_tags.assert_awaited_once_with(expected_dtos)
     usecase.repository.add_tag_on_company.assert_awaited_once_with(
-        name="라인", tag_ids=[1, 2]
+        name="라인", tag_ids=[tag.id for tag in created_tags]
     )

@@ -14,7 +14,7 @@ async def test_create_company(
     session: AsyncSession, repository: CompanyRepository
 ) -> None:
     # Given
-    tags = [Tag(id=1), Tag(id=2), Tag(id=3)]
+    tags = [Tag(), Tag(), Tag()]
     session.add_all(tags)
     await session.commit()
 

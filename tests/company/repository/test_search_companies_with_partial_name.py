@@ -13,26 +13,26 @@ async def test_it_should_return_matches_if_partial_name_exists(
     # Given
     company_1 = Company()
     company_1.translations = [
-        CompanyTranslation(name="라인 프레쉬", locale=Locale.KO),
-        CompanyTranslation(name="LINE FRESH", locale=Locale.EN),
-        CompanyTranslation(name="ラインフレッシュ", locale=Locale.JP),
+        CompanyTranslation(name="지오 코리아", locale=Locale.KO),
+        CompanyTranslation(name="GEOCM Co.", locale=Locale.EN),
+        CompanyTranslation(name="GEOCM", locale=Locale.JP),
     ]
 
     company_2 = Company()
     company_2.translations = [
-        CompanyTranslation(name="라인업", locale=Locale.KO),
+        CompanyTranslation(name="지오지", locale=Locale.KO),
     ]
     session.add_all([company_1, company_2])
     await session.flush()
 
     # When
-    results = await repository.search_companies_with_partial_name("라인")
+    results = await repository.search_companies_with_partial_name("지오")
 
     # Then
     assert len(results) == 2
     assert {result.name for result in results} == {
-        "라인 프레쉬",
-        "라인업",
+        "지오 코리아",
+        "지오지",
     }
 
 

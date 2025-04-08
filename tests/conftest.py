@@ -2,6 +2,7 @@ import os
 from typing import AsyncGenerator
 
 import pytest
+import pytest_asyncio
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
@@ -10,7 +11,7 @@ from sqlalchemy.ext.asyncio import (
 from sqlalchemy.pool import NullPool
 
 from app.core.config import settings
-from app.core.database import Base
+from app.core.database import Base, db_session_ctx
 
 os.environ["ENV_FILE"] = ".env.test"
 
@@ -45,3 +46,10 @@ async def session() -> AsyncGenerator[AsyncSession, None]:
         finally:
             await session.rollback()
             await session.close()
+
+
+@pytest_asyncio.fixture(autouse=True, scope="function")
+async def _inject_context_session(session: AsyncSession):
+    token = db_session_ctx.set(session)
+    yield
+    db_session_ctx.reset(token)
