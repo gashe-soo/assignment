@@ -3,9 +3,7 @@ from app.tag.models import Tag
 
 
 class TagRepository:
-    async def create_tags(
-        self, tags: list[CreateTagDto]
-    ) -> list[CreateTagDto]:
+    async def create_tags(self, tags: list[CreateTagDto]) -> list[Tag]:
         # TODO: Implement this method
         raise NotImplementedError
 
