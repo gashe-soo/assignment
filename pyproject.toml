@@ -35,3 +35,11 @@ mypy_path = ["./"]
 strict = true
 ignore_missing_imports = true
 disable_error_code = ["misc"]
+
+[tool.isort]
+profile = "black"
+line_length = 79
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+combine_as_imports = true
