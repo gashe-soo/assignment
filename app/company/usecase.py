@@ -1,7 +1,7 @@
 from app.company.dtos import (
     CreateCompanyDto,
     CreateCompanyWithTagDto,
-    NameWithLocale,
+    TagNameWithLocales,
 )
 from app.company.exceptions import NotFoundCompanyException
 from app.company.models import Company
@@ -62,11 +62,23 @@ class CompanyUsecase:
         ]
 
     async def add_tag_on_company(
-        self, name: str, tags: list[NameWithLocale]
+        self, name: str, tags: list[TagNameWithLocales]
     ) -> None:
-        # TODO: Implement this method
-        raise NotImplementedError
+        tag_dtos = [
+            CreateTagDto(
+                tag_name=[
+                    TagNameWithLocale(
+                        name=tag_name.name, locale=tag_name.locale
+                    )
+                    for tag_name in tag_name_with_locale.names
+                ]
+            )
+            for tag_name_with_locale in tags
+        ]
+        created_tags = await self.tag_usecase.create_tags(tag_dtos)
+        tag_ids = [tag.id for tag in created_tags]
+        await self.repository.add_tag_on_company(name=name, tag_ids=tag_ids)
 
     async def delete_tag_of_company(self, name: str, tag_name: str) -> None:
-        # TODO: Implement this method
-        raise NotImplementedError
+        tag = await self.tag_usecase.get_tag_by_name(name=tag_name)
+        await self.repository.delete_tag_of_company(name=name, tag_id=tag.id)

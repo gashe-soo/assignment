@@ -11,7 +11,7 @@ class TagUsecase:
     async def create_tags(self, tags: list[CreateTagDto]) -> list[Tag]:
         return await self.repository.create_tags(tags)
 
-    async def get_tag_by_name(self, name: str, locale: str) -> Tag:
+    async def get_tag_by_name(self, name: str) -> Tag:
         tag = await self.repository.get_tag_by_name(name)
         if not tag:
             raise NotFoundTagException(f"Tag with name {name} not found.")

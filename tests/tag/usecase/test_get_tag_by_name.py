@@ -2,7 +2,6 @@ from unittest.mock import AsyncMock
 
 import pytest
 
-from app.core.enums import Locale
 from app.tag.exceptions import NotFoundTagException
 from app.tag.models import Tag, TagTranslation
 from app.tag.usecase import TagUsecase
@@ -26,7 +25,7 @@ async def test_it_should_return_tag_when_locale_matches(
     usecase.repository = mock_repo
 
     # When
-    result = await usecase.get_tag_by_name("디자인", "ko")
+    result = await usecase.get_tag_by_name("디자인")
 
     # Then
     assert result is tag
@@ -44,4 +43,4 @@ async def test_it_should_raise_not_found_error_if_tag_not_found(
 
     # Expect
     with pytest.raises(NotFoundTagException):
-        await usecase.get_tag_by_name("없는태그", Locale.KO)
+        await usecase.get_tag_by_name("없는태그")
