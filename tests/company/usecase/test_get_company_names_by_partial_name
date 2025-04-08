@@ -1,0 +1,44 @@
+import pytest
+
+from app.company.usecase import CompanyUsecase
+from app.company.dtos import CompanyWithLocale
+
+
+@pytest.mark.asyncio
+async def test_should_return_company_names_with_matching_locale(usecase: CompanyUsecase) -> None:
+    # Given
+    usecase.repository.search_companies_with_partial_name.return_value = [
+        CompanyWithLocale(name="라인", locale="ko"),
+        CompanyWithLocale(name="LINE", locale="en"),
+        CompanyWithLocale(name="라인 푸드", locale="ko"),
+    ]
+
+    # When
+    result = await usecase.get_company_names_by_partial_name("라인", "ko")
+
+    # Then
+    assert result == ["라인", "라인 푸드"]
+    usecase.repository.search_companies_with_partial_name.assert_awaited_once_with(partial="라인")
+
+
+@pytest.mark.asyncio
+async def test_should_return_empty_list_when_locale_not_matched(usecase: CompanyUsecase) -> None:
+    usecase.repository.search_companies_with_partial_name.return_value = [
+        CompanyWithLocale(name="LINE", locale="en"),
+        CompanyWithLocale(name="LINE Food", locale="en"),
+    ]
+
+    result = await usecase.get_company_names_by_partial_name("LINE", "ko")
+
+    assert result == []
+
+
+@pytest.mark.asyncio
+async def test_should_return_empty_list_when_no_matches(usecase: CompanyUsecase) -> None:
+    # Given
+    usecase.repository.search_companies_with_partial_name.return_value = []
+
+    # When
+    result = await usecase.get_company_names_by_partial_name("없는이름", "ko")
+
+    assert result == []

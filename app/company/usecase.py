@@ -50,8 +50,16 @@ class CompanyUsecase:
     async def get_company_names_by_partial_name(
         self, name: str, locale: str
     ) -> list[str]:
-        # TODO: Implemnt this method
-        raise NotImplementedError
+        companies_with_locale = (
+            await self.repository.search_companies_with_partial_name(
+                partial=name
+            )
+        )
+        return [
+            company_with_local.name
+            for company_with_local in companies_with_locale
+            if company_with_local.locale == locale
+        ]
 
     async def add_tag_on_company(
         self, name: str, tags: list[NameWithLocale]

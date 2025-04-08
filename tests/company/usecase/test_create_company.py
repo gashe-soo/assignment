@@ -51,7 +51,7 @@ async def test_it_should_create_tags_and_company(
     )
 
     # When
-    result = await usecase.create_company(company_data=dto, locale="ko")
+    result = await usecase.create_company(company_data=dto)
 
     # Then
     usecase.tag_usecase.create_tags.assert_awaited_once()
